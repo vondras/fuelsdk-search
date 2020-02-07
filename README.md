@@ -63,7 +63,7 @@ search_filter = (Prop('Key') != 'Value')
 
 #### IN
 
-Just pass a list-like object to the '__eq__' operator
+Just pass a list-like object to `Prop.__eq__` operator
 
 ```python
 values = {'Value1', 'Value2'}
@@ -134,7 +134,7 @@ search_filter = (Prop('Key') != None)
 
 #### Inverting
 
-All simple operators except `'LIKE'` can be inverted with the `__inv__` operator, `~`.
+All simple operators except `'LIKE'` can be inverted with the `Prop.__inv__` operator, `~`.
 This can be a cheap way to effect a `NOT_IN` operator, one which isn't supported by the rest API. For example:
 
 ```python
