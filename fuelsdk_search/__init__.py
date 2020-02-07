@@ -1,3 +1,6 @@
+from .operand import Simple, Complex
+from .operator import Operator
+
 # -*- coding: utf-8 -*-
 from pkg_resources import get_distribution, DistributionNotFound
 
