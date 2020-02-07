@@ -1,11 +1,11 @@
 [tool.poetry]
 name = "fuelsdk_search"
-version = "0.1.0"
+version = "1.0.1"
 description = "Convenient search_filter building for Salesforce Marketing Cloud FuelSDK using overloaded operators"
 authors = ["Clayton VonDras <clayton@vondr.as>"]
 license = "MIT"
 packages = [
-    { include = "change_case", from = "src" },
+    { include = "fuelsdk_search", from = "src" },
 ]
 
 [tool.poetry.dependencies]
