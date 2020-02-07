@@ -1,4 +1,6 @@
+# -*- coding: utf-8 -*-
 from __future__ import annotations
+
 from enum import Enum
 
 
@@ -30,7 +32,7 @@ class Operator(str, Enum):
             cls.LT: cls.GE,
             cls.LE: cls.GT,
             cls.GT: cls.LE,
-            cls.GE: cls.LT
+            cls.GE: cls.LT,
         }
 
         try:

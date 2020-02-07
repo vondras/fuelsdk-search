@@ -1,19 +1,24 @@
+# -*- coding: utf-8 -*-
 from __future__ import annotations
 
 import dataclasses as dc
-from collections.abc import Collection, Mapping
-from typing import Optional, Union, Any
+from collections import abc
+from typing import TYPE_CHECKING
 
-from fuelsdk_search.operator import Operator
+from .operator import Operator
 
-NULL = ''
+if TYPE_CHECKING:
+    from typing import Any, Optional, Union, Collection
+
+
+NULL = ""
 
 
 def is_non_string_collection(value: Any) -> bool:
-    return isinstance(value, Collection) and not isinstance(value, str)
+    return isinstance(value, abc.Collection) and not isinstance(value, str)
 
 
-class AttributeMap(Mapping):
+class AttributeMap(abc.Mapping):
     def __getitem__(self, k):
         return self.__dict__.__getitem__(k)
 
@@ -36,19 +41,19 @@ class Operand(AttributeMap):
     def __and__(self, other: Operand) -> Complex:
         if isinstance(other, Operand):
             pass
-        elif isinstance(other, Mapping):
+        elif isinstance(other, abc.Mapping):
             other = Simple(**other)
         else:
-            raise TypeError('Unsupported Operand')
+            raise TypeError("Unsupported Operand")
         return Complex(Operator.AND, (self, other))
 
     def __or__(self, other: Operand) -> Complex:
         if isinstance(other, Operand):
             pass
-        elif isinstance(other, Mapping):
+        elif isinstance(other, abc.Mapping):
             other = Simple(**other)
         else:
-            raise TypeError('Unsupported Operand')
+            raise TypeError("Unsupported Operand")
         return Complex(Operator.OR, (self, other))
 
     def build(self):
@@ -70,8 +75,11 @@ class Complex(Operand):
 
     @property
     def __dict__(self) -> dict:
-        left, *operands = (dict(operand) for operand in Complex.flatten(self.operator, self.operands) if
-                           operand is not None)
+        left, *operands = (
+            dict(operand)
+            for operand in Complex.flatten(self.operator, self.operands)
+            if operand is not None
+        )
 
         operands = list(operands)
         n = len(operands)
@@ -80,14 +88,14 @@ class Complex(Operand):
             return left
 
         search_filter = {
-            'LeftOperand': left,
-            'LogicalOperator': self.operator,
+            "LeftOperand": left,
+            "LogicalOperator": self.operator,
         }
 
         if n > 1:
-            search_filter['AdditionalOperands'] = operands[1:]
+            search_filter["AdditionalOperands"] = operands[1:]
 
-        search_filter['RightOperand'] = operands[0]
+        search_filter["RightOperand"] = operands[0]
 
         return search_filter
 
@@ -102,16 +110,22 @@ class Simple(Operand):
         operator = self.SimpleOperator
 
         if operator is None:
-            raise ValueError('Cannot invert, SimpleOperator is None')
+            raise ValueError("Cannot invert, SimpleOperator is None")
 
         if operator is Operator.BETWEEN:
-            lower, upper = self.Value
+            if not isinstance(self.Value, abc.Sequence):
+                raise TypeError("Value is not a sequence")
+            lower, upper = self.Value  # noqa
             return (self < lower) | (self > upper)
 
         if operator is Operator.IN:
-            return Complex(Operator.AND, list(self != value for value in self.Value))
+            if not isinstance(self.Value, abc.Sequence):
+                raise TypeError("Value is not a sequence")
+            return Complex(
+                Operator.AND, list(self != value for value in self.Value)  # noqa
+            )
 
-        operator = ~operator
+        operator = ~operator  # noqa
         return self._replace(SimpleOperator=operator)
 
     def __pos__(self) -> Simple:
@@ -129,7 +143,7 @@ class Simple(Operand):
         if is_non_string_collection(other):
             n = len(other)
             if n == 0:
-                raise ValueError('Collection length must be greater than or equal to 1')
+                raise ValueError("Collection length must be greater than or equal to 1")
             if n == 1:
                 return self == other.__iter__().__next__()
             operator, value = Operator.IN, list(value)
@@ -145,11 +159,13 @@ class Simple(Operand):
     def __lt__(self, other: Any, op: Operator = Operator.LT) -> Simple:
         operator, value = self.SimpleOperator, self.Value
 
-        if operator is Operator.BETWEEN:
-            lower, upper = value
+        if operator is Operator.BETWEEN:  # noqa
+            if not isinstance(self.Value, abc.Sequence):
+                raise TypeError("Value is not a sequence")
+            lower, _ = value  # noqa
             return self._replace(SimpleOperator=~op, Value=lower).__lt__(other, op)
         elif other is None:
-            pass
+            return self._replace(SimpleOperator=operator, Value=value)
         elif operator in {Operator.GT, Operator.GE}:
             operator, value = Operator.BETWEEN, [value, other]
         else:
@@ -159,12 +175,15 @@ class Simple(Operand):
     def __gt__(self, other: Any, op: Operator = Operator.GT) -> Simple:
         operator, value = self.SimpleOperator, self.Value
 
-        if operator is Operator.BETWEEN:
-            lower, upper = value
+        if operator is Operator.BETWEEN:  # noqa
+            if not isinstance(self.Value, abc.Sequence):
+                raise TypeError("Value is not a sequence")
+            _, upper = value  # noqa
             return self._replace(SimpleOperator=~op, Value=upper).__gt__(other, op)
         elif other is None:
-            # On the second loop through for the BETWEEN Operator, this allows us to delete a bound
-            pass
+            # On the second loop through for the BETWEEN Operator,
+            # this allows us to delete a bound
+            return self._replace(SimpleOperator=operator, Value=value)
         elif operator in {Operator.LT, Operator.LE}:
             operator, value = Operator.BETWEEN, [other, value]
         else:
