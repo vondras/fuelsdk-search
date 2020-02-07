@@ -1,0 +1,24 @@
+[tool.poetry]
+name = "fuelsdk_search"
+version = "0.1.0"
+description = "Convenient search_filter building for Salesforce Marketing Cloud FuelSDK using overloaded operators"
+authors = ["Clayton VonDras <clayton@vondr.as>"]
+license = "MIT"
+packages = [
+    { include = "change_case", from = "src" },
+]
+
+[tool.poetry.dependencies]
+python = "^3.7"
+
+[tool.poetry.dev-dependencies]
+black = "^19.10b0"
+coverage = "^5.0.3"
+pytest = "^5.3.5"
+pytest-cov = "^2.8.1"
+prospector = {extras = ["pyroma"], version = "^1.2.0"}
+pre_commit = "^2.0.1"
+
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"
