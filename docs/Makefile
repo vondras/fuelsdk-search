@@ -9,7 +9,7 @@ BUILDDIR      = ../build/sphinx/
 AUTODOCDIR    = api
 AUTODOCBUILD  = sphinx-apidoc
 PROJECT       = fuelsdk_search
-MODULEDIR     = ../src/fuelsdk_search
+MODULEDIR     = ../fuelsdk_search
 
 # User-friendly check for sphinx-build
 ifeq ($(shell which $(SPHINXBUILD) >/dev/null 2>&1; echo $?), 1)

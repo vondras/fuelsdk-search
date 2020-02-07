@@ -1,5 +1,6 @@
 from enum import Enum
 
+
 class Operator(str, Enum):
     EQ = "equals"
     NE = "notEquals"
