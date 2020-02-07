@@ -58,7 +58,7 @@ search_filter = (Prop('Key') == 'Value')
 #### notEquals
 
 ```python
-search_filter = (Prop('Key') == 'Value')
+search_filter = (Prop('Key') != 'Value')
 ```
 
 #### IN
