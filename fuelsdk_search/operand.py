@@ -10,7 +10,7 @@ NULL = ''
 
 
 def is_non_string_collection(value: Any) -> bool:
-    return isinstance(value, str) and isinstance(value, Collection)
+    return isinstance(value, Collection) and not isinstance(value, str)
 
 
 class AttributeMap(Mapping):
@@ -50,6 +50,9 @@ class Operand(AttributeMap):
         else:
             raise TypeError('Unsupported Operand')
         return Complex(Operator.OR, (self, other))
+
+    def build(self):
+        return dict(self)
 
 
 @dc.dataclass(frozen=True, eq=False)
