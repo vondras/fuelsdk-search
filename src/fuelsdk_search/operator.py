@@ -18,6 +18,9 @@ class Operator(str, Enum):
     IS_NOT_NULL = "isNotNull"
     AND = "AND"
     OR = "OR"
+    
+    def __str__(self):
+        return self.value
 
     def __invert__(self):
         return self.__class__.invert(self)
