@@ -1,15 +1,9 @@
 # -*- coding: utf-8 -*-
-from __future__ import annotations
-
 import dataclasses as dc
 from collections import abc
-from typing import TYPE_CHECKING
+from typing import Any, Collection, Optional, Union
 
 from .operator import Operator
-
-if TYPE_CHECKING:
-    from typing import Any, Optional, Union, Collection
-
 
 NULL = ""
 
@@ -38,7 +32,7 @@ class Operand(AttributeMap):
     def _replace(self, **kwargs):
         return dc.replace(self, **kwargs)
 
-    def __and__(self, other: Operand) -> Complex:
+    def __and__(self, other: "Operand") -> "Complex":
         if isinstance(other, Operand):
             pass
         elif isinstance(other, abc.Mapping):
@@ -47,7 +41,7 @@ class Operand(AttributeMap):
             raise TypeError("Unsupported Operand")
         return Complex(Operator.AND, (self, other))
 
-    def __or__(self, other: Operand) -> Complex:
+    def __or__(self, other: "Operand") -> "Complex":
         if isinstance(other, Operand):
             pass
         elif isinstance(other, abc.Mapping):
@@ -106,7 +100,7 @@ class Simple(Operand):
     SimpleOperator: Optional[Operator] = None
     Value: Any = None
 
-    def __invert__(self) -> Union[Simple, Complex]:
+    def __invert__(self) -> Union["Simple", Complex]:
         operator = self.SimpleOperator
 
         if operator is None:
@@ -121,20 +115,18 @@ class Simple(Operand):
         if operator is Operator.IN:
             if not isinstance(self.Value, abc.Sequence):
                 raise TypeError("Value is not a sequence")
-            return Complex(
-                Operator.AND, list(self != value for value in self.Value)  # noqa
-            )
+            return Complex(Operator.AND, list(self != value for value in self.Value))  # noqa
 
         operator = ~operator  # noqa
         return self._replace(SimpleOperator=operator)
 
-    def __pos__(self) -> Simple:
+    def __pos__(self) -> "Simple":
         return self._replace(SimpleOperator=Operator.IS_NOT_NULL, Value=NULL)
 
-    def __neg__(self) -> Simple:
+    def __neg__(self) -> "Simple":
         return ~+self
 
-    def __eq__(self, other: Any) -> Simple:
+    def __eq__(self, other: Any) -> "Simple":
         if other is None:
             return -self
 
@@ -150,13 +142,13 @@ class Simple(Operand):
 
         return self._replace(SimpleOperator=operator, Value=value)
 
-    def __ne__(self, other: Any) -> Simple:
+    def __ne__(self, other: Any) -> "Simple":
         return ~(self == other)
 
-    def __mod__(self, other: Any) -> Simple:
+    def __mod__(self, other: Any) -> "Simple":
         return self._replace(SimpleOperator=Operator.LIKE, Value=other)
 
-    def __lt__(self, other: Any, op: Operator = Operator.LT) -> Simple:
+    def __lt__(self, other: Any, op: Operator = Operator.LT) -> "Simple":
         operator, value = self.SimpleOperator, self.Value
 
         if operator is Operator.BETWEEN:  # noqa
@@ -172,7 +164,7 @@ class Simple(Operand):
             operator, value = op, other
         return self._replace(SimpleOperator=operator, Value=value)
 
-    def __gt__(self, other: Any, op: Operator = Operator.GT) -> Simple:
+    def __gt__(self, other: Any, op: Operator = Operator.GT) -> "Simple":
         operator, value = self.SimpleOperator, self.Value
 
         if operator is Operator.BETWEEN:  # noqa
@@ -190,8 +182,8 @@ class Simple(Operand):
             operator, value = op, other
         return self._replace(SimpleOperator=operator, Value=value)
 
-    def __le__(self, other: Any) -> Simple:
+    def __le__(self, other: Any) -> "Simple":
         return self.__lt__(other, op=Operator.LE)
 
-    def __ge__(self, other: Any) -> Simple:
+    def __ge__(self, other: Any) -> "Simple":
         return self.__gt__(other, op=Operator.GE)

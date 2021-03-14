@@ -1,18 +1,10 @@
-# -*- coding: utf-8 -*-
-# -*- coding: utf-8 -*-
-from pkg_resources import DistributionNotFound, get_distribution
+"""SFMC FuelSDK Search."""
 
 from .operand import Complex, Simple
 from .operator import Operator
 
 __all__ = ["Simple", "Complex", "Operator"]
 
-
-try:
-    # Change here if project is renamed and does not equal the package name
-    dist_name = __name__
-    __version__ = get_distribution(dist_name).version
-except DistributionNotFound:
-    __version__ = "unknown"
-finally:
-    del get_distribution, DistributionNotFound
+__author__ = """Clayton VonDras"""
+__email__ = "clayton@vondr.as"
+__version__ = "0.1.0"

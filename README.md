@@ -1,39 +1,64 @@
-fuelsdk_search
--------------------------
+# SFMC FuelSDK Search
 
+[![PyPI](https://img.shields.io/pypi/v/fuelsdk-search.svg)](https://pypi.org/project/fuelsdk-search/)
+[![Python Version](https://img.shields.io/pypi/pyversions/fuelsdk-search)](https://pypi.org/project/fuelsdk-search)
+[![License](https://img.shields.io/pypi/l/fuelsdk-search)](https://opensource.org/licenses/MIT)
+
+[![Read the
+Docs](https://readthedocs.org/projects/fuelsdk-search/badge/)](https://fuelsdk-search.readthedocs.io/)
+[![Tests](https://github.com/vondras/fuelsdk-search/workflows/tests/badge.svg)](https://github.com/vondras/fuelsdk-search/actions?workflow=tests)
+[![Codecov](https://codecov.io/gh/vondras/fuelsdk-search/branch/main/graph/badge.svg)](https://codecov.io/gh/vondras/fuelsdk-search)
+
+[![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)](https://github.com/pre-commit/pre-commit)
+[![Black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
 Convenient search_filter building for FuelSDK using overloaded operators
 
+- GitHub repo: <https://github.com/vondras/fuelsdk-search.git>
+- Documentation: <https://fuelsdk-search.readthedocs.io>
+- Free software: MIT
 
 ## Description
 
+Using the Salesforce Marketing Cloud SOAP API can be a pain; the
+particular pain-point this library seeks to alleviate is in the use of
+`SimpleFilterPart`s and `ComplexFilterPart`s in search filters. It can
+be hard to recall the search syntax for `SimpleOperator`s, especially
+since they're case sensitive in an ecosystem where almost nothing else
+is, and the strings for different logical operators vary across the UI
+and APIs. This library provides a simple abstraction for SOAP API search
+filter syntax using plain old python operators.
 
-Using the Salesforce Marketing Cloud SOAP API can be a pain; the particular pain-point this library seeks to alleviate
-is in the use of `SimpleFilterPart`s and `ComplexFilterPart`s in search filters. It can be hard to recall the search
-syntax for `SimpleOperator`s, especially since they're case sensitive in an ecosystem where almost nothing else is, and
-the strings for different logical operators vary across the UI and APIs. This library provides a simple abstraction for
-SOAP API search filter syntax using plain old python operators.
+## Features
+
+- TODO
+
+## Requirements
+
+- TODO
 
 ## Installation
 
-```bash
-# eventually
-pip install fuelsdk_search
+You can install _SFMC FuelSDK Search_ via [pip](https://pip.pypa.io/)
+from [PyPI](https://pypi.org/):
+
+```{.console}
+$ pip install fuelsdk-search
 ```
 
-## Use
+## Usage
 
-```python
+```jupyter
 In[1]: from fuelsdk_search import Simple as Prop
 In[2]: (Prop('Name') == 'Joe Schmoe').build()
-Out[2]: 
+Out[2]:
 {'Property': 'Name',
  'SimpleOperator': <Operator.EQ: 'equals'>,
  'Value': 'Joe Schmoe'}
 In[3]: (((Prop('Name') == 'Joe Schmoe') |
   ...:   (Prop('Name') == 'Jane Doe')) &
   ...:  (Prop('City') % 'St. ')).build()
-Out[3]: 
+Out[3]:
 {'LeftOperand': {'LeftOperand': {'Property': 'Name',
    'SimpleOperator': <Operator.EQ: 'equals'>,
    'Value': 'Joe Schmoe'},
@@ -78,7 +103,7 @@ The `IN` simple operator will fail if the list has only one value; `Prop.__eq__`
 ```python
 search_filter = (Prop('Key') % 'Value')
 ```
-    
+
 #### greaterThan
 
 ```python
@@ -106,7 +131,7 @@ search_filter = (Prop('Key') <= 'Value')
 #### between
 
 The `between` simple operator can be achieved by combining `<` and `>`. It also works for their `<=` variants because
-SFMC isn't clear about how it handles bounds. 
+SFMC isn't clear about how it handles bounds.
 
 ```python
 lower = 0
@@ -140,7 +165,9 @@ This can be a cheap way to effect a `NOT_IN` operator, one which isn't supported
 ```python
 search_filter = ~(Prop('Key') == ['Value1', 'Value2', 'Value3', 'Value4'])
 ```
+
 Is equivalent to:
+
 ```python
 search_filter = \
     (Prop('Key') != 'Value1') & \
@@ -182,3 +209,27 @@ condition_d = (Prop('Key2') == ['Value4', 'Value5'])
 
 search_filter = (condition_a | condition_b) & condition_c & condition_d
 ```
+
+## Contributing
+
+Contributions are very welcome. To learn more, see the [Contributor
+Guide](CONTRIBUTING.rst).
+
+## License
+
+Distributed under the terms of the [MIT
+license](https://opensource.org/licenses/MIT), _SFMC FuelSDK Search_ is
+free and open source software.
+
+## Issues
+
+If you encounter any problems, please [file an
+issue](https://github.com/vondras/fuelsdk-search/issues) along with a
+detailed description.
+
+## Credits
+
+This project was generated from
+[\@cjolowicz](https://github.com/cjolowicz)\'s [Hypermodern Python
+Cookiecutter](https://github.com/cjolowicz/cookiecutter-hypermodern-python)
+template.

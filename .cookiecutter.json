@@ -1,0 +1,11 @@
+{
+  "_template": "gh:cjolowicz/cookiecutter-hypermodern-python",
+  "author": "Clayton VonDras",
+  "email": "clayton@vondr.as",
+  "friendly_name": "SFMC FuelSDK Search",
+  "github_user": "vondras",
+  "license": "MIT",
+  "package_name": "fuelsdk_search",
+  "project_name": "fuelsdk-search",
+  "version": "0.1.0"
+}

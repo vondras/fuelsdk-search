@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-from __future__ import annotations
-
 from enum import Enum
 
 
@@ -21,6 +19,9 @@ class Operator(str, Enum):
 
     def __invert__(self):
         return self.__class__.invert(self)
+
+    def __str__(self):
+        return self.value
 
     @classmethod
     def invert(cls, op):
